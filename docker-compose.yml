@@ -1,0 +1,23 @@
+services:
+  baresip:
+    image: ghcr.io/baresip/docker/baresip:latest
+    container_name: baresip-twilio
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      TWILIO_TERMINATION_URI: ${TWILIO_TERMINATION_URI:-}
+      TWILIO_SIP_USERNAME: ${TWILIO_SIP_USERNAME:-}
+      TWILIO_SIP_PASSWORD: ${TWILIO_SIP_PASSWORD:-}
+      TWILIO_CALLER_ID: ${TWILIO_CALLER_ID:-}
+      TWILIO_OUTBOUND_PROXY: ${TWILIO_OUTBOUND_PROXY:-pstn.singapore.twilio.com}
+      SIP_TRANSPORT: ${SIP_TRANSPORT:-tcp}
+    ports:
+      # Chi localhost dieu khien duoc baresip
+      - "127.0.0.1:4444:4444"
+      - "5060:5060/udp"
+      - "5060:5060/tcp"
+      - "10000-10020:10000-10020/udp"
+    volumes:
+      - ./docker/entrypoint.sh:/entrypoint.sh:ro
+      - ./baresip/config:/opt/baresip/config:ro
